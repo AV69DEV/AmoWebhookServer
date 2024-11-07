@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация через amoCRM</title>
+    <script
+        class="amocrm_oauth"
+        charset="utf-8"
+        data-client-id="{{ client_id }}"
+        data-redirect-uri="{{ redirect_uri }}"
+        data-title="Войти через amoCRM"
+        data-compact="false"
+        data-class-name="className"
+        data-color="default"
+        data-state="state"
+        data-error-callback="functionName"
+        data-mode="popup"
+        src="https://www.amocrm.ru/auth/button.min.js"
+    ></script>
+</head>
+<body>
+    <h1>Авторизация через amoCRM</h1>
+    <button class="amocrm_oauth">Войти</button>
+</body>
+</html>

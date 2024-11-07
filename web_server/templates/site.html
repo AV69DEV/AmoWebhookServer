@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интеграция с amoCRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script
+        class="amocrm_oauth"
+        charset="utf-8"
+        data-client-id="{{ client_id }}"
+        data-redirect-uri="{{ redirect_uri }}"
+        data-title="Войти через amoCRM"
+        data-compact="false"
+        data-class-name="className"
+        data-color="default"
+        data-state="state"
+        data-error-callback="functionName"
+        data-mode="popup"
+        src="https://www.amocrm.ru/auth/button.min.js"
+    ></script>
+</head>
+<body>
+    <header>
+        <h1>Интеграция с amoCRM</h1>
+        <nav>
+            <ul>
+                <li><a href="#features">Функции</a></li>
+                <li><a href="#about">О нас</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero">
+        <h2>Упрощаем ваш бизнес!</h2>
+        <p>Интеграция с amoCRM поможет вам повысить эффективность продаж.</p>
+        <a href="#contact" class="cta-button">Связаться с нами</a>
+    </section>
+
+    <section id="features">
+        <h2>Наши функции</h2>
+        <ul>
+            <li>Автоматизация процессов</li>
+            <li>Управление сделками</li>
+            <li>Аналитика и отчеты</li>
+        </ul>
+    </section>
+    <section id="widget">
+        <h1>Авторизация через amoCRM</h1>
+        <div class="amocrm-button-container">
+            <script
+                class="amocrm_oauth"
+                charset="utf-8"
+                data-client-id="{{ client_id }}"
+                data-redirect-uri="{{ redirect_uri }}"
+                data-title="Войти через amoCRM"
+                data-compact="false"
+                data-class-name="className"
+                data-color="default"
+                data-state="state"
+                data-error-callback="functionName"
+                data-mode="popup"
+                src="https://www.amocrm.ru/auth/button.min.js"
+            ></script>
+        </div>
+    </section>
+    <section id="about">
+        <h2>О нас</h2>
+        <p>Мы команда профессионалов, которые помогут вам максимально эффективно использовать amoCRM.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Контакты</h2>
+        <p>Напишите нам на <a href="mailto:email@example.com">email@example.com</a> или позвоните по номеру +7 (123) 456-78-90.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Интеграция с amoCRM. Все права защищены.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+

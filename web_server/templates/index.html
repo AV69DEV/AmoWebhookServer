@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webhook Receiver</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #output { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Обработка вебхуков</h1>
+    <div id="output">Ожидание данных...</div>
+
+    <script>
+        const outputDiv = document.getElementById('output');
+
+        // Функция для обновления информации на сайте
+        function updateOutput(data) {
+            outputDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        // Функция для получения данных по вебхуку
+        async function fetchWebhookData() {
+            const response = await fetch('/webhook', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                updateOutput(data);
+            } else {
+                outputDiv.innerHTML = 'Ошибка при получении данных.';
+            }
+        }
+
+        // Запрашиваем данные каждые 5 секунд
+        setInterval(fetchWebhookData, 5000);
+    </script>
+</body>
+</html>
