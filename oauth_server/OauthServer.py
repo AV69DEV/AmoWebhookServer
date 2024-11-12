@@ -8,7 +8,8 @@ import requests
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD').replace('@', '%40')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+app.config[
+    'SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD').replace('@', '%40')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -29,9 +30,6 @@ class UserToken(db.Model):
 with app.app_context():
     db.create_all()
 
-# Хранение последних полученных данных
-last_data = {}
-
 
 # Callback для обработки кода авторизации и сохранения токенов
 @app.route('/oauth/callback')
@@ -39,7 +37,6 @@ def oauth_callback():
     app.logger.info(request.args)
     code = request.args.get('code')
     referer = request.args.get('referer')
-    print(f'code: {code}\nreferer: {referer}')
 
     if not code or not referer:
         return "Ошибка: код или referrer не передан", 400
@@ -89,22 +86,52 @@ def oauth_callback():
         return f"Ошибка при получении токенов: {response.status_code} - {response.text}"
 
 
-# Эндпоинт для обработки вебхуков
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    global last_data
-    if request.content_type == 'application/x-www-form-urlencoded':
-        # Получаем данные из формы и сохраняем их
-        last_data = request.form.to_dict()
-        return 'Webhook received', 200
+@app.route('/api/update_token', methods=['POST'])
+def update_token():
+    app.logger.info("Получены параметры:", request.json)
+    id = request.json.get('id')
+    refresh_token = request.json.get('refresh_token')
+
+    if not id or not refresh_token:
+        return "Ошибка: ID пользователя или refresh_token не переданы", 400
+
+    refresh_token_url = f"https://{os.getenv('AMOCRM_DOMAIN')}.amocrm.ru/oauth2/access_token"
+    data = {
+        "client_id": os.getenv('CLIENT_ID'),
+        "client_secret": os.getenv('CLIENT_SECRET'),
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+        "redirect_uri": os.getenv('REDIRECT_URI')
+    }
+
+    response = requests.post(refresh_token_url, data=data)
+    if response.status_code == 200:
+        tokens = response.json()
+        access_token = tokens.get('access_token')
+        refresh_token = tokens.get('refresh_token')
+        expires_in = tokens.get('expires_in', 0)
+
+        if not access_token or not refresh_token:
+            app.logger.error("Токены не получены из ответа: %s", tokens)
+            return "Ошибка: не удалось получить токены", 400
+
+        expires_at = datetime.now() + timedelta(seconds=expires_in)
+        user_token = UserToken.query.filter_by(id=id).first()
+
+        if user_token is None:
+            app.logger.warning("Пользователь с ID %s не найден", id)
+            return "Ошибка: пользователь не найден", 404
+
+        user_token.access_token = access_token
+        user_token.refresh_token = refresh_token
+        user_token.expires_at = expires_at
+
+        db.session.commit()
+        return jsonify({"access_token": access_token}), 200
+
     else:
-        return 'Unsupported Media Type', 415
-
-
-# Эндпоинт для получения последних данных
-@app.route('/webhook', methods=['GET'])
-def get_webhook_data():
-    return jsonify(last_data)  # Возвращаем последние данные
+        app.logger.error("Ошибка при обновлении токенов: %s", response.text)
+        return "Ошибка: не удалось обновить токен", response.status_code
 
 
 if __name__ == '__main__':
