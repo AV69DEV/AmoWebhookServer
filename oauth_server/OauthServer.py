@@ -86,7 +86,7 @@ def oauth_callback():
         return f"Ошибка при получении токенов: {response.status_code} - {response.text}"
 
 
-@app.route('/api/update_token', methods=['POST'])
+@app.route('/oauth/update_token', methods=['POST'])
 def update_token():
     app.logger.info("Получены параметры:", request.json)
     id = request.json.get('id')
