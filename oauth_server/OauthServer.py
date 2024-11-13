@@ -91,7 +91,7 @@ def update_token():
     app.logger.info("Получены параметры:", request.json)
     id = request.json.get('id')
     refresh_token = request.json.get('refresh_token')
-
+    print(f"параметры запроса:{request.json}")
     if not id or not refresh_token:
         return "Ошибка: ID пользователя или refresh_token не переданы", 400
 
@@ -103,7 +103,7 @@ def update_token():
         "refresh_token": refresh_token,
         "redirect_uri": os.getenv('REDIRECT_URI')
     }
-
+    print(f"Данные для отправки на сервер авторизации амо:\n{data}")
     response = requests.post(refresh_token_url, data=data)
     if response.status_code == 200:
         tokens = response.json()
