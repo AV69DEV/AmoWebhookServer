@@ -9,7 +9,10 @@ app = Flask(__name__, static_folder=os.getenv('STATIC_FOLDER'),
 
 @app.route('/webhooks', methods=['POST'])
 def receive_webhook():
-    webhook_data = request.form.to_dict()
+    if request.is_json:
+        webhook_data = request.json
+    else:
+        webhook_data = request.form.to_dict()
     print("Получен вебхук:", webhook_data)
     return "Webhook received", 200
 
