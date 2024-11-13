@@ -7,7 +7,7 @@ app = Flask(__name__, static_folder=os.getenv('STATIC_FOLDER'),
             template_folder=os.getenv('TEMPLATE_FOLDER'))
 
 
-@app.route('/webhooks', methods=['POST'])
+@app.route('/webhooks/test', methods=['POST'])
 def receive_webhook():
     if request.is_json:
         webhook_data = request.json
