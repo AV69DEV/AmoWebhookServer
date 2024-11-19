@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.middleware.proxy_fix import ProxyFix
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
@@ -7,6 +8,14 @@ import requests
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 app = Flask(__name__)
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app,
+    x_for=1,      # Доверять 1 прокси для IP (X-Forwarded-For)
+    x_proto=1,    # Доверять 1 прокси для протокола (X-Forwarded-Proto)
+    x_host=1,     # Доверять 1 прокси для хоста (X-Forwarded-Host)
+    x_prefix=1    # Доверять 1 прокси для префикса пути (X-Forwarded-Prefix)
+)
 
 app.config[
     'SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD').replace('@', '%40')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
@@ -34,6 +43,8 @@ with app.app_context():
 # Callback для обработки кода авторизации и сохранения токенов
 @app.route('/oauth/callback')
 def oauth_callback():
+    headers = dict(request.headers)  # Получить все заголовки
+    print("Заголовки запроса:", headers)
     app.logger.info(request.args)
     code = request.args.get('code')
     referer = request.args.get('referer')
@@ -88,6 +99,8 @@ def oauth_callback():
 
 @app.route('/oauth/update_token', methods=['POST'])
 def update_token():
+    headers = dict(request.headers)  # Получить все заголовки
+    print("Заголовки запроса:", headers)
     app.logger.info("Получены параметры:", request.json)
     id = request.json.get('id')
     refresh_token = request.json.get('refresh_token')

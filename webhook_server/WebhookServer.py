@@ -18,6 +18,8 @@ app.wsgi_app = ProxyFix(
 
 @app.route('/webhooks/test', methods=['POST'])
 def receive_webhook():
+    headers = dict(request.headers)  # Получить все заголовки
+    print("Заголовки запроса:", headers)
     if request.is_json:
         webhook_data = request.json
     else:
