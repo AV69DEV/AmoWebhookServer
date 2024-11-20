@@ -1,7 +1,29 @@
 from flask import Flask, request
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
+import logging
+import sys
 import os
+
+logging.basicConfig(
+    filename='/path/to/flask_server.log',
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s'
+)
+
+
+# Перенаправление stdout и stderr в лог
+class LogRedirector:
+    def write(self, message):
+        if message.strip():  # Игнорировать пустые строки
+            logging.info(message)
+
+    def flush(self):  # Необходим метод для совместимости
+        pass
+
+
+sys.stdout = LogRedirector()
+sys.stderr = LogRedirector()
 
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 app = Flask(__name__, static_folder=os.getenv('STATIC_FOLDER'),
