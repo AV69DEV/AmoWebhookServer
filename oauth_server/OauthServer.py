@@ -9,7 +9,7 @@ import os
 import requests
 
 logging.basicConfig(
-    filename='/var/www/dev/AmoWebhookServer/logs/oauth_server',
+    filename='/var/www/dev/AmoWebhookServer/logs/oauth_server/main.log',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )

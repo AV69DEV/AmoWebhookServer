@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 logging.basicConfig(
-    filename='/var/www/dev/AmoWebhookServer/logs/web_server',
+    filename='/var/www/dev/AmoWebhookServer/logs/web_server/main.log',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )

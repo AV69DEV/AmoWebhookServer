@@ -6,7 +6,7 @@ import sys
 import os
 
 logging.basicConfig(
-    filename='/var/www/dev/AmoWebhookServer/logs/webhook_server',
+    filename='/var/www/dev/AmoWebhookServer/logs/webhook_server/main.log',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )
