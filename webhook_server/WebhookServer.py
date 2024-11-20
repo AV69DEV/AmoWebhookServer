@@ -6,7 +6,7 @@ import sys
 import os
 
 logging.basicConfig(
-    filename='/path/to/flask_server.log',
+    filename='/var/www/dev/AmoWebhookServer/logs/webhook_server',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )

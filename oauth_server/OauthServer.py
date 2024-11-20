@@ -9,7 +9,7 @@ import os
 import requests
 
 logging.basicConfig(
-    filename='/path/to/flask_server.log',
+    filename='/var/www/dev/AmoWebhookServer/logs/oauth_server',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )

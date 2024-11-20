@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 
 logging.basicConfig(
-    filename='/path/to/flask_server.log',
+    filename='/var/www/dev/AmoWebhookServer/logs/web_server',
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s] %(message)s'
 )
