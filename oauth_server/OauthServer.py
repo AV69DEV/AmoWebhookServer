@@ -84,8 +84,11 @@ def oauth_callback():
         "grant_type": "authorization_code"
     }
 
+    print(f'Данные для обмена кода авторизации на токены:\n{data}')
+
     response = requests.post(token_url, data=data)
     if response.status_code == 200:
+        print(f'Получены токены:\n{response.json()}')
         tokens = response.json()
         access_token = tokens.get('access_token')
         refresh_token = tokens.get('refresh_token')
