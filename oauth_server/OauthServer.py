@@ -19,7 +19,7 @@ logging.basicConfig(
 class LogRedirector:
     def write(self, message):
         if message.strip():  # Игнорировать пустые строки
-            logging.info(message)
+            logging.info(message.strip())
 
     def flush(self):  # Необходим метод для совместимости
         pass
